@@ -10,33 +10,83 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PlatformRouteImport } from './routes/_platform'
+import { Route as PlatformDashboardRouteImport } from './routes/_platform.dashboard'
+import { Route as PlatformInspectionsRouteImport } from './routes/_platform.inspections'
+import { Route as PlatformInventoryRouteImport } from './routes/_platform.inventory'
+import { Route as PlatformMapRouteImport } from './routes/_platform.map'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlatformRoute = PlatformRouteImport.update({
+  id: '/_platform',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlatformDashboardRoute = PlatformDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => PlatformRoute,
+} as any)
+const PlatformInspectionsRoute = PlatformInspectionsRouteImport.update({
+  id: '/inspections',
+  path: '/inspections',
+  getParentRoute: () => PlatformRoute,
+} as any)
+const PlatformInventoryRoute = PlatformInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => PlatformRoute,
+} as any)
+const PlatformMapRoute = PlatformMapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => PlatformRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof PlatformDashboardRoute
+  '/inspections': typeof PlatformInspectionsRoute
+  '/inventory': typeof PlatformInventoryRoute
+  '/map': typeof PlatformMapRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof PlatformDashboardRoute
+  '/inspections': typeof PlatformInspectionsRoute
+  '/inventory': typeof PlatformInventoryRoute
+  '/map': typeof PlatformMapRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_platform': typeof PlatformRouteWithChildren
+  '/_platform/dashboard': typeof PlatformDashboardRoute
+  '/_platform/inspections': typeof PlatformInspectionsRoute
+  '/_platform/inventory': typeof PlatformInventoryRoute
+  '/_platform/map': typeof PlatformMapRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/dashboard' | '/inspections' | '/inventory' | '/map'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/dashboard' | '/inspections' | '/inventory' | '/map'
+  id:
+    | '__root__'
+    | '/'
+    | '/_platform'
+    | '/_platform/dashboard'
+    | '/_platform/inspections'
+    | '/_platform/inventory'
+    | '/_platform/map'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PlatformRoute: typeof PlatformRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +98,65 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_platform': {
+      id: '/_platform'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof PlatformRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_platform/dashboard': {
+      id: '/_platform/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof PlatformDashboardRouteImport
+      parentRoute: typeof PlatformRoute
+    }
+    '/_platform/inspections': {
+      id: '/_platform/inspections'
+      path: '/inspections'
+      fullPath: '/inspections'
+      preLoaderRoute: typeof PlatformInspectionsRouteImport
+      parentRoute: typeof PlatformRoute
+    }
+    '/_platform/inventory': {
+      id: '/_platform/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof PlatformInventoryRouteImport
+      parentRoute: typeof PlatformRoute
+    }
+    '/_platform/map': {
+      id: '/_platform/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof PlatformMapRouteImport
+      parentRoute: typeof PlatformRoute
+    }
   }
 }
 
+interface PlatformRouteChildren {
+  PlatformDashboardRoute: typeof PlatformDashboardRoute
+  PlatformInspectionsRoute: typeof PlatformInspectionsRoute
+  PlatformInventoryRoute: typeof PlatformInventoryRoute
+  PlatformMapRoute: typeof PlatformMapRoute
+}
+
+const PlatformRouteChildren: PlatformRouteChildren = {
+  PlatformDashboardRoute: PlatformDashboardRoute,
+  PlatformInspectionsRoute: PlatformInspectionsRoute,
+  PlatformInventoryRoute: PlatformInventoryRoute,
+  PlatformMapRoute: PlatformMapRoute,
+}
+
+const PlatformRouteWithChildren = PlatformRoute._addFileChildren(
+  PlatformRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PlatformRoute: PlatformRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
