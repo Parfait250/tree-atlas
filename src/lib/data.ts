@@ -106,7 +106,7 @@ function buildTrees(): Tree[] {
       height: +(1 + rnd() * 9).toFixed(1),
       diameter: Math.round(4 + rnd() * 40),
       health,
-      lastInspection: dateBetween(2026, 2026.8 as unknown as number),
+      lastInspection: `2026-${String(1 + Math.floor(rnd() * 10)).padStart(2, "0")}-${String(1 + Math.floor(rnd() * 27)).padStart(2, "0")}`,
     });
   }
   return trees;
