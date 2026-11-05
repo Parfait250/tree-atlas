@@ -8,7 +8,7 @@ import { DISTRICTS, type Tree } from "@/lib/data";
 import { downloadCSV, useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/_platform/inventory")({
-  validateSearch: (s: Record<string, unknown>) => ({ q: typeof s.q === "string" ? s.q : undefined }),
+  validateSearch: (s: Record<string, unknown>): { q?: string } => ({ q: typeof s.q === "string" ? s.q : undefined }),
   head: () => ({
     meta: [
       { title: "Tree Inventory — Tree360 Rwanda" },

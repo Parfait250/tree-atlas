@@ -10,7 +10,7 @@ import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_platform/inspections")({
-  validateSearch: (s: Record<string, unknown>) => ({ tree: typeof s.tree === "string" ? s.tree : undefined }),
+  validateSearch: (s: Record<string, unknown>): { tree?: string } => ({ tree: typeof s.tree === "string" ? s.tree : undefined }),
   head: () => ({
     meta: [
       { title: "Health & Inspections — Tree360 Rwanda" },

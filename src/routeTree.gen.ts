@@ -11,10 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlatformRouteImport } from './routes/_platform'
+import { Route as PlatformAnalyticsRouteImport } from './routes/_platform.analytics'
 import { Route as PlatformDashboardRouteImport } from './routes/_platform.dashboard'
+import { Route as PlatformFruitRouteImport } from './routes/_platform.fruit'
 import { Route as PlatformInspectionsRouteImport } from './routes/_platform.inspections'
+import { Route as PlatformIntegrationRouteImport } from './routes/_platform.integration'
 import { Route as PlatformInventoryRouteImport } from './routes/_platform.inventory'
 import { Route as PlatformMapRouteImport } from './routes/_platform.map'
+import { Route as PlatformReportsRouteImport } from './routes/_platform.reports'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -25,14 +29,29 @@ const PlatformRoute = PlatformRouteImport.update({
   id: '/_platform',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlatformAnalyticsRoute = PlatformAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => PlatformRoute,
+} as any)
 const PlatformDashboardRoute = PlatformDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => PlatformRoute,
 } as any)
+const PlatformFruitRoute = PlatformFruitRouteImport.update({
+  id: '/fruit',
+  path: '/fruit',
+  getParentRoute: () => PlatformRoute,
+} as any)
 const PlatformInspectionsRoute = PlatformInspectionsRouteImport.update({
   id: '/inspections',
   path: '/inspections',
+  getParentRoute: () => PlatformRoute,
+} as any)
+const PlatformIntegrationRoute = PlatformIntegrationRouteImport.update({
+  id: '/integration',
+  path: '/integration',
   getParentRoute: () => PlatformRoute,
 } as any)
 const PlatformInventoryRoute = PlatformInventoryRouteImport.update({
@@ -45,43 +64,82 @@ const PlatformMapRoute = PlatformMapRouteImport.update({
   path: '/map',
   getParentRoute: () => PlatformRoute,
 } as any)
+const PlatformReportsRoute = PlatformReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => PlatformRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof PlatformAnalyticsRoute
   '/dashboard': typeof PlatformDashboardRoute
+  '/fruit': typeof PlatformFruitRoute
   '/inspections': typeof PlatformInspectionsRoute
+  '/integration': typeof PlatformIntegrationRoute
   '/inventory': typeof PlatformInventoryRoute
   '/map': typeof PlatformMapRoute
+  '/reports': typeof PlatformReportsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof PlatformAnalyticsRoute
   '/dashboard': typeof PlatformDashboardRoute
+  '/fruit': typeof PlatformFruitRoute
   '/inspections': typeof PlatformInspectionsRoute
+  '/integration': typeof PlatformIntegrationRoute
   '/inventory': typeof PlatformInventoryRoute
   '/map': typeof PlatformMapRoute
+  '/reports': typeof PlatformReportsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_platform': typeof PlatformRouteWithChildren
+  '/_platform/analytics': typeof PlatformAnalyticsRoute
   '/_platform/dashboard': typeof PlatformDashboardRoute
+  '/_platform/fruit': typeof PlatformFruitRoute
   '/_platform/inspections': typeof PlatformInspectionsRoute
+  '/_platform/integration': typeof PlatformIntegrationRoute
   '/_platform/inventory': typeof PlatformInventoryRoute
   '/_platform/map': typeof PlatformMapRoute
+  '/_platform/reports': typeof PlatformReportsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/inspections' | '/inventory' | '/map'
+  fullPaths:
+    | '/'
+    | '/analytics'
+    | '/dashboard'
+    | '/fruit'
+    | '/inspections'
+    | '/integration'
+    | '/inventory'
+    | '/map'
+    | '/reports'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/inspections' | '/inventory' | '/map'
+  to:
+    | '/'
+    | '/analytics'
+    | '/dashboard'
+    | '/fruit'
+    | '/inspections'
+    | '/integration'
+    | '/inventory'
+    | '/map'
+    | '/reports'
   id:
     | '__root__'
     | '/'
     | '/_platform'
+    | '/_platform/analytics'
     | '/_platform/dashboard'
+    | '/_platform/fruit'
     | '/_platform/inspections'
+    | '/_platform/integration'
     | '/_platform/inventory'
     | '/_platform/map'
+    | '/_platform/reports'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -105,6 +163,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlatformRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_platform/analytics': {
+      id: '/_platform/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof PlatformAnalyticsRouteImport
+      parentRoute: typeof PlatformRoute
+    }
     '/_platform/dashboard': {
       id: '/_platform/dashboard'
       path: '/dashboard'
@@ -112,11 +177,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlatformDashboardRouteImport
       parentRoute: typeof PlatformRoute
     }
+    '/_platform/fruit': {
+      id: '/_platform/fruit'
+      path: '/fruit'
+      fullPath: '/fruit'
+      preLoaderRoute: typeof PlatformFruitRouteImport
+      parentRoute: typeof PlatformRoute
+    }
     '/_platform/inspections': {
       id: '/_platform/inspections'
       path: '/inspections'
       fullPath: '/inspections'
       preLoaderRoute: typeof PlatformInspectionsRouteImport
+      parentRoute: typeof PlatformRoute
+    }
+    '/_platform/integration': {
+      id: '/_platform/integration'
+      path: '/integration'
+      fullPath: '/integration'
+      preLoaderRoute: typeof PlatformIntegrationRouteImport
       parentRoute: typeof PlatformRoute
     }
     '/_platform/inventory': {
@@ -133,21 +212,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlatformMapRouteImport
       parentRoute: typeof PlatformRoute
     }
+    '/_platform/reports': {
+      id: '/_platform/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof PlatformReportsRouteImport
+      parentRoute: typeof PlatformRoute
+    }
   }
 }
 
 interface PlatformRouteChildren {
+  PlatformAnalyticsRoute: typeof PlatformAnalyticsRoute
   PlatformDashboardRoute: typeof PlatformDashboardRoute
+  PlatformFruitRoute: typeof PlatformFruitRoute
   PlatformInspectionsRoute: typeof PlatformInspectionsRoute
+  PlatformIntegrationRoute: typeof PlatformIntegrationRoute
   PlatformInventoryRoute: typeof PlatformInventoryRoute
   PlatformMapRoute: typeof PlatformMapRoute
+  PlatformReportsRoute: typeof PlatformReportsRoute
 }
 
 const PlatformRouteChildren: PlatformRouteChildren = {
+  PlatformAnalyticsRoute: PlatformAnalyticsRoute,
   PlatformDashboardRoute: PlatformDashboardRoute,
+  PlatformFruitRoute: PlatformFruitRoute,
   PlatformInspectionsRoute: PlatformInspectionsRoute,
+  PlatformIntegrationRoute: PlatformIntegrationRoute,
   PlatformInventoryRoute: PlatformInventoryRoute,
   PlatformMapRoute: PlatformMapRoute,
+  PlatformReportsRoute: PlatformReportsRoute,
 }
 
 const PlatformRouteWithChildren = PlatformRoute._addFileChildren(
