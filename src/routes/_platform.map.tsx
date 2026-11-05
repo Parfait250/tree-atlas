@@ -10,7 +10,7 @@ import type { Tree } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_platform/map")({
-  validateSearch: (s: Record<string, unknown>) => ({ focus: typeof s.focus === "string" ? s.focus : undefined }),
+  validateSearch: (s: Record<string, unknown>): { focus?: string } => ({ focus: typeof s.focus === "string" ? s.focus : undefined }),
   head: () => ({
     meta: [
       { title: "GIS Tree Map — Tree360 Rwanda" },
