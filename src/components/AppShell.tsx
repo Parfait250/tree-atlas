@@ -112,7 +112,30 @@ export function AppShell() {
 
       <main className="mx-auto max-w-7xl p-4 lg:p-8">
         <Outlet />
-        <p className="mt-10 border-t pt-4 text-[11px] leading-relaxed text-muted-foreground">{DISCLAIMER}</p>
+        <footer className="mt-10 border-t pt-6 text-sm text-muted-foreground">
+          <div className="grid gap-6 sm:grid-cols-3">
+            <div>
+              <p className="font-semibold text-foreground">Tree360 Rwanda</p>
+              <p className="mt-1 text-xs leading-relaxed">Geospatial tree mapping and monitoring to support greener, more resilient communities across Rwanda.</p>
+            </div>
+            <div>
+              <p className="font-semibold text-foreground">Contact</p>
+              <p className="mt-1 text-xs">Phone: <a href="tel:+250793737761" className="hover:text-primary">+250 793 737 761</a></p>
+              <p className="text-xs">Address: Kigali, Rwanda</p>
+            </div>
+            <div>
+              <p className="font-semibold text-foreground">Quick links</p>
+              <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                <Link to="/dashboard" className="hover:text-primary">Dashboard</Link>
+                <Link to="/map" className="hover:text-primary">Tree Map</Link>
+                <Link to="/inventory" className="hover:text-primary">Inventory</Link>
+                <Link to="/reports" className="hover:text-primary">Reports</Link>
+              </div>
+            </div>
+          </div>
+          <p className="mt-6 text-[11px] leading-relaxed">{DISCLAIMER}</p>
+          <p className="mt-2 text-[11px]">© {new Date().getFullYear()} Tree360 Rwanda. All rights reserved.</p>
+        </footer>
       </main>
     </div>
   );
