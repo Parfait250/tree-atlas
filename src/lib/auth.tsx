@@ -1,3 +1,4 @@
+import type React from "react";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,7 +32,9 @@ type AuthState = {
   signOut: () => Promise<void>;
 };
 
-const Ctx = createContext<AuthState | null>(null);
+// Keep one context instance across hot reloads so providers and consumers always match.
+const g = globalThis as unknown as { __tree360AuthCtx?: React.Context<AuthState | null> };
+const Ctx = g.__tree360AuthCtx ?? (g.__tree360AuthCtx = createContext<AuthState | null>(null));
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
