@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, ROLE_LABELS, type AppRole } from "@/lib/auth";
 import { fieldCls } from "@/components/ui-kit";
+import { ensureDemoAccount, DEMO_ROLES, DEMO_PASSWORD, type DemoRole } from "@/lib/demo.functions";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -35,6 +36,18 @@ function AuthPage() {
   useEffect(() => {
     if (!loading && user) navigate({ to: "/dashboard", replace: true });
   }, [loading, user, navigate]);
+
+  const demoLogin = async (r: DemoRole) => {
+    setBusy(true);
+    try {
+      const { email } = await ensureDemoAccount({ data: { role: r } });
+      const { error } = await supabase.auth.signInWithPassword({ email, password: DEMO_PASSWORD });
+      if (error) toast.error(error.message);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Demo sign-in failed");
+    }
+    setBusy(false);
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,6 +112,19 @@ function AuthPage() {
               </button>
             </p>
             {mode === "up" && <p className="text-xs text-muted-foreground">Administrator accounts are assigned by an existing administrator.</p>}
+            {mode === "in" && (
+              <div className="border-t pt-4">
+                <p className="mb-2 text-center text-xs font-medium text-muted-foreground">Or try the demo instantly as…</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {DEMO_ROLES.map((r) => (
+                    <button key={r} type="button" disabled={busy} onClick={() => demoLogin(r)}
+                      className="rounded-lg border bg-background px-2 py-2 text-xs font-medium hover:bg-muted disabled:opacity-60">
+                      {ROLE_LABELS[r]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </form>
         )}
       </div>
