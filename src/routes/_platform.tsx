@@ -1,4 +1,5 @@
-import { createFileRoute, Link, Navigate, useLocation } from "@tanstack/react-router";
+import { createFileRoute, Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { AppShell } from "@/components/AppShell";
 import { useAuth, canAccess, ROLE_LABELS } from "@/lib/auth";
 
@@ -10,8 +11,13 @@ export const Route = createFileRoute("/_platform")({
 function Gate() {
   const { loading, user, roles } = useAuth();
   const { pathname } = useLocation();
-  if (loading) return <div className="grid min-h-screen place-items-center text-sm text-muted-foreground">Loading…</div>;
-  if (!user) return <Navigate to="/auth" replace />;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) navigate({ to: "/auth", replace: true });
+  }, [loading, user, navigate]);
+
+  if (loading || !user) return <div className="grid min-h-screen place-items-center text-sm text-muted-foreground">Loading…</div>;
   if (roles.length && !canAccess(roles, pathname)) {
     return (
       <div className="grid min-h-screen place-items-center p-6 text-center">
