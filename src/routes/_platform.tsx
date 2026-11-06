@@ -1,6 +1,27 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate, useLocation } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
+import { useAuth, canAccess, ROLE_LABELS } from "@/lib/auth";
 
 export const Route = createFileRoute("/_platform")({
-  component: AppShell,
+  ssr: false,
+  component: Gate,
 });
+
+function Gate() {
+  const { loading, user, roles } = useAuth();
+  const { pathname } = useLocation();
+  if (loading) return <div className="grid min-h-screen place-items-center text-sm text-muted-foreground">Loading…</div>;
+  if (!user) return <Navigate to="/auth" replace />;
+  if (roles.length && !canAccess(roles, pathname)) {
+    return (
+      <div className="grid min-h-screen place-items-center p-6 text-center">
+        <div>
+          <p className="text-lg font-semibold">This page isn't available for your role</p>
+          <p className="mt-1 text-sm text-muted-foreground">You're signed in as {roles.map((r) => ROLE_LABELS[r]).join(", ")}.</p>
+          <Link to="/dashboard" className="mt-4 inline-block text-sm font-medium text-primary">Go to dashboard →</Link>
+        </div>
+      </div>
+    );
+  }
+  return <AppShell />;
+}

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlatformRouteImport } from './routes/_platform'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as PlatformAnalyticsRouteImport } from './routes/_platform.analytics'
 import { Route as PlatformDashboardRouteImport } from './routes/_platform.dashboard'
 import { Route as PlatformFruitRouteImport } from './routes/_platform.fruit'
@@ -27,6 +28,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const PlatformRoute = PlatformRouteImport.update({
   id: '/_platform',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlatformAnalyticsRoute = PlatformAnalyticsRouteImport.update({
@@ -72,6 +78,7 @@ const PlatformReportsRoute = PlatformReportsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/analytics': typeof PlatformAnalyticsRoute
   '/dashboard': typeof PlatformDashboardRoute
   '/fruit': typeof PlatformFruitRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/analytics': typeof PlatformAnalyticsRoute
   '/dashboard': typeof PlatformDashboardRoute
   '/fruit': typeof PlatformFruitRoute
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_platform': typeof PlatformRouteWithChildren
+  '/auth': typeof AuthRoute
   '/_platform/analytics': typeof PlatformAnalyticsRoute
   '/_platform/dashboard': typeof PlatformDashboardRoute
   '/_platform/fruit': typeof PlatformFruitRoute
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/analytics'
     | '/dashboard'
     | '/fruit'
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/analytics'
     | '/dashboard'
     | '/fruit'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_platform'
+    | '/auth'
     | '/_platform/analytics'
     | '/_platform/dashboard'
     | '/_platform/fruit'
@@ -145,6 +157,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PlatformRoute: typeof PlatformRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -161,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof PlatformRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_platform/analytics': {
@@ -251,6 +271,7 @@ const PlatformRouteWithChildren = PlatformRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PlatformRoute: PlatformRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

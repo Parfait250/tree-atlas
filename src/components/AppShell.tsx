@@ -1,8 +1,9 @@
 import { Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
-  LayoutDashboard, Map, TreePine, Stethoscope, Apple, BarChart3, FileText, Plug, Bell, Search, Menu, X, Leaf,
+  LayoutDashboard, Map, TreePine, Stethoscope, Apple, BarChart3, FileText, Plug, Bell, Search, Menu, X, Leaf, LogOut,
 } from "lucide-react";
+import { useAuth, canAccess, ROLE_LABELS } from "@/lib/auth";
 import { DISCLAIMER } from "@/lib/data";
 import { useStore } from "@/lib/store";
 
@@ -37,10 +38,12 @@ export function AppShell() {
   const [bell, setBell] = useState(false);
   const { stats } = useStore();
   const navigate = useNavigate();
+  const { roles, fullName, signOut } = useAuth();
+  const initials = fullName.split(/[\s@]/).filter(Boolean).slice(0, 2).map((s) => s[0]?.toUpperCase()).join("") || "U";
 
   const nav = (
     <nav className="flex flex-col gap-1">
-      {NAV.map(({ to, label, icon: Icon }) => (
+      {NAV.filter(({ to }) => canAccess(roles, to)).map(({ to, label, icon: Icon }) => (
         <Link
           key={to}
           to={to}
@@ -105,8 +108,16 @@ export function AppShell() {
           )}
         </div>
         <div className="flex items-center gap-2">
-          <span className="grid size-9 place-items-center rounded-full bg-secondary text-xs font-semibold text-primary">FO</span>
-          <span className="hidden text-xs leading-tight sm:block"><b className="block">Field Officer</b><span className="text-muted-foreground">Demo account</span></span>
+          <span className="grid size-9 place-items-center rounded-full bg-secondary text-xs font-semibold text-primary">{initials}</span>
+          <span className="hidden text-xs leading-tight sm:block"><b className="block max-w-40 truncate">{fullName}</b><span className="text-muted-foreground">{roles.map((r) => ROLE_LABELS[r]).join(", ")}</span></span>
+          <button
+            aria-label="Sign out"
+            title="Sign out"
+            onClick={async () => { await signOut(); navigate({ to: "/auth", replace: true }); }}
+            className="grid size-9 place-items-center rounded-lg hover:bg-muted"
+          >
+            <LogOut className="size-4" />
+          </button>
         </div>
       </header>
 
