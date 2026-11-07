@@ -20,6 +20,20 @@ export const ROLE_ACCESS: Record<AppRole, string[]> = {
   admin: ["/dashboard", "/map", "/inventory", "/inspections", "/fruit", "/analytics", "/reports", "/integration"],
 };
 
+/** First page each role sees after signing in. */
+export const ROLE_LANDING: Record<AppRole, string> = {
+  admin: "/dashboard",
+  ministry_official: "/analytics",
+  researcher: "/inventory",
+  field_officer: "/inspections",
+};
+
+export function landingFor(roles: AppRole[]) {
+  const order: AppRole[] = ["admin", "ministry_official", "researcher", "field_officer"];
+  const r = order.find((x) => roles.includes(x));
+  return r ? ROLE_LANDING[r] : "/dashboard";
+}
+
 export function canAccess(roles: AppRole[], path: string) {
   return roles.some((r) => ROLE_ACCESS[r].includes(path));
 }
@@ -46,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const load = async (u: User | null) => {
       setUser(u);
       if (!u) { setRoles([]); setFullName(""); setLoading(false); return; }
+      setLoading(true);
       const [{ data: r }, { data: p }] = await Promise.all([
         supabase.from("user_roles").select("role").eq("user_id", u.id),
         supabase.from("profiles").select("full_name").eq("id", u.id).maybeSingle(),
