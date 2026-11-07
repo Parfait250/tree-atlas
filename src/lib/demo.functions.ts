@@ -34,15 +34,15 @@ export const ensureDemoAccount = createServerFn({ method: "POST" })
     });
     let userId = created?.user?.id;
     if (error && !/already/i.test(error.message)) throw new Error(error.message);
-    if (data.role === "admin") {
-      if (!userId) {
-        const { data: list } = await supabaseAdmin.auth.admin.listUsers({ perPage: 200 });
-        userId = list.users.find((u) => u.email === email)?.id;
-      }
-      if (userId) {
-        await supabaseAdmin.from("user_roles").delete().eq("user_id", userId).neq("role", "admin");
-        await supabaseAdmin.from("user_roles").upsert({ user_id: userId, role: "admin" }, { onConflict: "user_id,role" });
-      }
+    if (!userId) {
+      const { data: list } = await supabaseAdmin.auth.admin.listUsers({ perPage: 200 });
+      userId = list.users.find((u) => u.email === email)?.id;
+    }
+    if (userId) {
+      // Make sure the profile and exactly the right role exist, even if the signup trigger didn't run.
+      await supabaseAdmin.from("profiles").upsert({ id: userId, full_name: NAMES[data.role], organization: "Tree360 Demo" }, { onConflict: "id" });
+      await supabaseAdmin.from("user_roles").delete().eq("user_id", userId).neq("role", data.role);
+      await supabaseAdmin.from("user_roles").upsert({ user_id: userId, role: data.role }, { onConflict: "user_id,role" });
     }
     return { email };
   });

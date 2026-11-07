@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Leaf } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth, ROLE_LABELS, type AppRole } from "@/lib/auth";
+import { useAuth, ROLE_LABELS, landingFor, type AppRole } from "@/lib/auth";
 import { fieldCls } from "@/components/ui-kit";
 import { ensureDemoAccount, DEMO_ROLES, DEMO_PASSWORD, type DemoRole } from "@/lib/demo.functions";
 
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/auth")({
 const SELF_ROLES: AppRole[] = ["field_officer", "ministry_official", "researcher"];
 
 function AuthPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, roles } = useAuth();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"in" | "up">("in");
   const [email, setEmail] = useState("");
@@ -34,8 +34,8 @@ function AuthPage() {
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/dashboard", replace: true });
-  }, [loading, user, navigate]);
+    if (!loading && user) navigate({ to: landingFor(roles) as "/dashboard", replace: true });
+  }, [loading, user, roles, navigate]);
 
   const demoLogin = async (r: DemoRole) => {
     setBusy(true);
@@ -60,7 +60,7 @@ function AuthPage() {
         email,
         password,
         options: {
-          emailRedirectTo: window.location.origin + "/dashboard",
+          emailRedirectTo: window.location.origin + "/auth",
           data: { full_name: fullName, organization, requested_role: role },
         },
       });
