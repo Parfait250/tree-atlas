@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { TreePine, HeartPulse, AlertTriangle, Skull, MapPin, ClipboardCheck, Activity } from "lucide-react";
+import { TreePine, HeartPulse, AlertTriangle, Skull, MapPin, ClipboardCheck, Activity, Download } from "lucide-react";
 import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, AreaChart, Area, Legend,
 } from "recharts";
 import { Card, CardTitle, DemoNote, PageHeader, Stat } from "@/components/ui-kit";
 import { RegisterTreeButton } from "@/components/RegisterTree";
 import { ACTIVITIES, MONTHLY_INSPECTIONS, SURVIVAL_TREND } from "@/lib/data";
-import { useStore } from "@/lib/store";
+import { useStore, toCSV, downloadCSV } from "@/lib/store";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/_platform/dashboard")({
   head: () => ({
@@ -78,7 +79,7 @@ function RolePanel() {
     );
   }
   // Field officer
-  const urgent = trees.filter((t) => t.health === "Critical" || t.health === "Poor").slice(0, 4);
+  const urgent = trees.filter((t) => t.health === "Critical" || t.health === "Needs attention").slice(0, 4);
   const weekAgo = Date.now() - 7 * 864e5;
   const thisWeek = inspections.filter((i) => new Date(i.date).getTime() >= weekAgo).length;
   const goal = 20;
