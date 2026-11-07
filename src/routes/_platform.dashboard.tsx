@@ -6,7 +6,7 @@ import {
 import { Card, CardTitle, DemoNote, PageHeader, Stat } from "@/components/ui-kit";
 import { RegisterTreeButton } from "@/components/RegisterTree";
 import { ACTIVITIES, MONTHLY_INSPECTIONS, SURVIVAL_TREND } from "@/lib/data";
-import { useStore, toCSV, downloadCSV } from "@/lib/store";
+import { useStore, downloadCSV } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/_platform/dashboard")({
@@ -72,7 +72,7 @@ function RolePanel() {
           <div><p className="text-xs text-muted-foreground">Inspections</p><p className="text-lg font-bold">{stats.inspections}</p></div>
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
-          <button className={btn} onClick={() => downloadCSV("tree360-dataset.csv", toCSV(trees as unknown as Record<string, unknown>[]))}><Download className="size-4" />Export full dataset (CSV)</button>
+          <button className={btn} onClick={() => downloadCSV("tree360-dataset.csv", trees as unknown as Record<string, unknown>[])}><Download className="size-4" />Export full dataset (CSV)</button>
           <Link to="/analytics" className={btn2}>Spatial analytics</Link>
         </div>
       </div>
