@@ -187,7 +187,7 @@ function AdminPage() {
             {recent.length === 0 && <li className="text-muted-foreground">No sign-ins yet.</li>}
             {recent.map((u) => (
               <li key={u.id} className="flex justify-between gap-3">
-                <span>{u.fullName || u.email} {u.role ? <span className={`ml-1 rounded-full border px-2 py-0.5 text-xs ${ROLE_BADGE[u.role]}`}>{ROLE_LABELS[u.role]}</span>
+                <span>{u.fullName || u.email} {u.role ? <span className={`ml-1 rounded-full border px-2 py-0.5 text-xs ${ROLE_BADGE[u.role]}`}>{ROLE_LABELS[u.role]}</span> : <span className="text-xs text-muted-foreground">· No role</span>}</span>
                 <span className="whitespace-nowrap text-muted-foreground">{new Date(u.lastSignIn!).toLocaleString()}</span>
               </li>
             ))}
