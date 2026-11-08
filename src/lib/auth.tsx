@@ -17,12 +17,12 @@ export const ROLE_ACCESS: Record<AppRole, string[]> = {
   field_officer: ["/dashboard", "/map", "/inventory", "/inspections", "/fruit"],
   ministry_official: ["/dashboard", "/map", "/inventory", "/inspections", "/fruit", "/analytics", "/reports"],
   researcher: ["/dashboard", "/map", "/inventory", "/fruit", "/analytics", "/reports"],
-  admin: ["/dashboard", "/map", "/inventory", "/inspections", "/fruit", "/analytics", "/reports", "/integration"],
+  admin: ["/dashboard", "/map", "/inventory", "/inspections", "/fruit", "/analytics", "/reports", "/integration", "/admin"],
 };
 
 /** First page each role sees after signing in. */
 export const ROLE_LANDING: Record<AppRole, string> = {
-  admin: "/dashboard",
+  admin: "/admin",
   ministry_official: "/analytics",
   researcher: "/inventory",
   field_officer: "/inspections",
