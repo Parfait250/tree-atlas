@@ -24,6 +24,12 @@ export const Route = createFileRoute("/_platform/admin")({
 });
 
 const ROLES: AppRole[] = ["field_officer", "ministry_official", "researcher", "admin"];
+const ROLE_BADGE: Record<AppRole, string> = {
+  admin: "bg-gold-soft text-gold border-gold/40",
+  ministry_official: "bg-sky-soft text-sky border-sky/40",
+  researcher: "bg-muted text-foreground border-border",
+  field_officer: "bg-secondary text-primary border-primary/30",
+};
 
 function AdminPage() {
   const { user } = useAuth();
@@ -87,11 +93,22 @@ function AdminPage() {
     <>
       <PageHeader title="Admin Control Center" sub="Manage who can use Tree360 and keep platform data in good shape." />
 
+      <div className="mb-6 h-1.5 w-full rounded-full bg-gradient-to-r from-sky via-gold to-primary" />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat label="Registered users" value={users.length} icon={Users} />
-        <Stat label="Administrators" value={counts.admin ?? 0} icon={ShieldCheck} />
-        <Stat label="Field officers" value={counts.field_officer ?? 0} icon={Activity} />
-        <Stat label="Trees on record" value={trees.length} icon={Activity} />
+        {[
+          { label: "Registered users", value: users.length, icon: Users, cls: "bg-sky-soft text-sky border-sky/30" },
+          { label: "Administrators", value: counts.admin ?? 0, icon: ShieldCheck, cls: "bg-gold-soft text-gold border-gold/30" },
+          { label: "Field officers", value: counts.field_officer ?? 0, icon: Activity, cls: "bg-secondary text-primary border-primary/20" },
+          { label: "Trees on record", value: trees.length, icon: Activity, cls: "bg-sky-soft text-sky border-sky/30" },
+        ].map(({ label, value, icon: Icon, cls }) => (
+          <div key={label} className={`rounded-xl border p-4 ${cls}`}>
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-medium text-foreground/70">{label}</p>
+              <Icon className="size-5" />
+            </div>
+            <p className="mt-2 text-3xl font-bold">{value}</p>
+          </div>
+        ))}
       </div>
 
       <Card className="mt-6">
@@ -133,7 +150,7 @@ function AdminPage() {
                         value={u.role ?? ""}
                         disabled={saving === u.id || u.id === user?.id}
                         onChange={(e) => onRole(u, e.target.value as AppRole)}
-                        className="rounded-lg border border-input bg-background px-2 py-1.5 text-sm"
+                        className={`rounded-full border px-3 py-1.5 text-sm font-medium ${u.role ? ROLE_BADGE[u.role] : "border-input bg-background"}`}
                       >
                         {!u.role && <option value="">No role</option>}
                         {ROLES.map((r) => (
@@ -156,10 +173,10 @@ function AdminPage() {
             {trees.length} trees and {inspections.length} inspections on this device.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <button onClick={backup} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">
+            <button onClick={backup} className="inline-flex items-center gap-2 rounded-lg bg-sky px-4 py-2 text-sm font-medium text-primary-foreground">
               <Download className="size-4" /> Download full backup
             </button>
-            <button onClick={onReset} className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium">
+            <button onClick={onReset} className="inline-flex items-center gap-2 rounded-lg border border-gold/50 bg-gold-soft px-4 py-2 text-sm font-medium text-gold">
               <RotateCcw className="size-4" /> Restore sample data
             </button>
           </div>
@@ -170,7 +187,7 @@ function AdminPage() {
             {recent.length === 0 && <li className="text-muted-foreground">No sign-ins yet.</li>}
             {recent.map((u) => (
               <li key={u.id} className="flex justify-between gap-3">
-                <span>{u.fullName || u.email} <span className="text-xs text-muted-foreground">· {u.role ? ROLE_LABELS[u.role] : "No role"}</span></span>
+                <span>{u.fullName || u.email} {u.role ? <span className={`ml-1 rounded-full border px-2 py-0.5 text-xs ${ROLE_BADGE[u.role]}`}>{ROLE_LABELS[u.role]}</span>
                 <span className="whitespace-nowrap text-muted-foreground">{new Date(u.lastSignIn!).toLocaleString()}</span>
               </li>
             ))}
