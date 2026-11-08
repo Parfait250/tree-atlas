@@ -84,6 +84,10 @@
   --info: oklch(0.6 0.16 250);
   --healthy: oklch(0.6 0.15 150);
   --forest: oklch(0.32 0.075 152);
+  --sky: oklch(0.55 0.15 240);
+  --sky-soft: oklch(0.95 0.035 240);
+  --gold: oklch(0.68 0.15 75);
+  --gold-soft: oklch(0.96 0.05 85);
   --border: oklch(0.92 0.012 160);
   --input: oklch(0.92 0.012 160);
   --ring: oklch(0.45 0.11 152);
@@ -110,6 +114,10 @@
   --color-info: var(--info);
   --color-healthy: var(--healthy);
   --color-forest: var(--forest);
+  --color-sky: var(--sky);
+  --color-sky-soft: var(--sky-soft);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
   --shadow-card: var(--shadow-card);
   --font-sans: var(--font-sans);
 }
