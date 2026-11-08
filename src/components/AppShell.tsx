@@ -1,13 +1,14 @@
 import { Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
-  LayoutDashboard, Map, TreePine, Stethoscope, Apple, BarChart3, FileText, Plug, Bell, Search, Menu, X, Leaf, LogOut,
+  LayoutDashboard, Map, TreePine, Stethoscope, Apple, BarChart3, FileText, Plug, Bell, Search, Menu, X, Leaf, LogOut, ShieldCheck,
 } from "lucide-react";
 import { useAuth, canAccess, ROLE_LABELS } from "@/lib/auth";
 import { DISCLAIMER } from "@/lib/data";
 import { useStore } from "@/lib/store";
 
 const NAV = [
+  { to: "/admin", label: "Admin Center", icon: ShieldCheck },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/map", label: "GIS Tree Map", icon: Map },
   { to: "/inventory", label: "Tree Inventory", icon: TreePine },
