@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Download, MapPin, Stethoscope, X } from "lucide-react";
+import { Download, MapPin, QrCode, Stethoscope, X } from "lucide-react";
+import { TreeQR } from "@/components/TreeQR";
 import { Card, DemoNote, HealthBadge, PageHeader, fieldCls } from "@/components/ui-kit";
 import { RegisterTreeButton } from "@/components/RegisterTree";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,8 @@ function Inventory() {
   const [district, setDistrict] = useState("");
   const [health, setHealth] = useState("");
   const [sel, setSel] = useState<Tree | null>(null);
+  const [picked, setPicked] = useState<Set<string>>(new Set());
+  const toggle = (id: string) => setPicked((p) => { const n = new Set(p); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   useEffect(() => setQ(initial ?? ""), [initial]);
 
   const rows = useMemo(() => {
@@ -47,7 +50,7 @@ function Inventory() {
 
   return (
     <>
-      <PageHeader title="Tree inventory & registration" sub={`${trees.length} sample records`} actions={<><Button variant="outline" onClick={exportCsv} disabled={!rows.length}><Download className="size-4" /> Export CSV</Button><RegisterTreeButton /></>} />
+      <PageHeader title="Tree inventory & registration" sub={`${trees.length} sample records`} actions={<><Button variant="outline" onClick={() => setPicked(new Set(rows.slice(0, 50).map((t) => t.id)))} disabled={!rows.length}>Select first 50</Button><Button variant="outline" asChild disabled={!picked.size}><Link to="/labels" search={{ ids: [...picked].join(",") }}><QrCode className="size-4" /> Print QR labels ({picked.size})</Link></Button><Button variant="outline" onClick={exportCsv} disabled={!rows.length}><Download className="size-4" /> Export CSV</Button><RegisterTreeButton /></>} />
       <DemoNote>All records are fictional examples for demonstration.</DemoNote>
       <Card className="p-0">
         <div className="grid gap-2 border-b p-4 sm:grid-cols-4">
@@ -59,12 +62,13 @@ function Inventory() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[820px] text-sm">
             <thead className="bg-muted/60 text-left text-xs text-muted-foreground">
-              <tr>{["Tree ID", "Species", "Category", "Location", "Planted", "Health", "Last inspection", "Actions"].map((h) => <th key={h} className="px-4 py-2.5 font-medium">{h}</th>)}</tr>
+              <tr><th className="px-3"><input type="checkbox" aria-label="Select all" checked={rows.length > 0 && rows.every((t) => picked.has(t.id))} onChange={(e) => setPicked(e.target.checked ? new Set(rows.map((t) => t.id)) : new Set())} /></th>{["Tree ID", "Species", "Category", "Location", "Planted", "Health", "Last inspection", "Actions"].map((h) => <th key={h} className="px-4 py-2.5 font-medium">{h}</th>)}</tr>
             </thead>
             <tbody>
-              {rows.length === 0 && <tr><td colSpan={8} className="py-12 text-center text-muted-foreground">No trees match your search.</td></tr>}
+              {rows.length === 0 && <tr><td colSpan={9} className="py-12 text-center text-muted-foreground">No trees match your search.</td></tr>}
               {rows.map((t) => (
                 <tr key={t.id} className="border-t hover:bg-muted/40">
+                  <td className="px-3"><input type="checkbox" aria-label={`Select ${t.id}`} checked={picked.has(t.id)} onChange={() => toggle(t.id)} /></td>
                   <td className="px-4 py-2.5 font-medium">{t.id}{t.isNew && <span className="ml-2 rounded-full bg-info/10 px-1.5 text-[10px] text-info">NEW</span>}</td>
                   <td className="px-4 py-2.5">{t.species}</td>
                   <td className="px-4 py-2.5">{t.category} tree</td>
@@ -99,6 +103,7 @@ function Inventory() {
                 <div key={k as string}><dt className="text-xs text-muted-foreground">{k}</dt><dd className="font-medium">{v}</dd></div>
               ))}
             </dl>
+            <div className="mt-4 flex items-center gap-3 rounded-lg border p-3"><TreeQR id={sel.id} size={96} /><div className="text-xs text-muted-foreground">Scan to open this tree's profile.<div className="mt-2"><Button size="sm" variant="outline" asChild><Link to="/labels" search={{ ids: sel.id }}>Print label</Link></Button></div></div></div>
             {sel.notes && <p className="mt-4 rounded-lg bg-muted p-3 text-sm">{sel.notes}</p>}
             <h3 className="mt-6 text-sm font-semibold">Inspection history</h3>
             <ul className="mt-2 space-y-2">
