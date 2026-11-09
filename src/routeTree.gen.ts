@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlatformRouteImport } from './routes/_platform'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as LabelsRouteImport } from './routes/labels'
 import { Route as PlatformAdminRouteImport } from './routes/_platform.admin'
 import { Route as PlatformAnalyticsRouteImport } from './routes/_platform.analytics'
 import { Route as PlatformDashboardRouteImport } from './routes/_platform.dashboard'
@@ -21,6 +22,7 @@ import { Route as PlatformIntegrationRouteImport } from './routes/_platform.inte
 import { Route as PlatformInventoryRouteImport } from './routes/_platform.inventory'
 import { Route as PlatformMapRouteImport } from './routes/_platform.map'
 import { Route as PlatformReportsRouteImport } from './routes/_platform.reports'
+import { Route as TreeIdRouteImport } from './routes/tree.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,6 +36,11 @@ const PlatformRoute = PlatformRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LabelsRoute = LabelsRouteImport.update({
+  id: '/labels',
+  path: '/labels',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlatformAdminRoute = PlatformAdminRouteImport.update({
@@ -81,10 +88,16 @@ const PlatformReportsRoute = PlatformReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => PlatformRoute,
 } as any)
+const TreeIdRoute = TreeIdRouteImport.update({
+  id: '/tree/$id',
+  path: '/tree/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/labels': typeof LabelsRoute
   '/admin': typeof PlatformAdminRoute
   '/analytics': typeof PlatformAnalyticsRoute
   '/dashboard': typeof PlatformDashboardRoute
@@ -94,10 +107,12 @@ export interface FileRoutesByFullPath {
   '/inventory': typeof PlatformInventoryRoute
   '/map': typeof PlatformMapRoute
   '/reports': typeof PlatformReportsRoute
+  '/tree/$id': typeof TreeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/labels': typeof LabelsRoute
   '/admin': typeof PlatformAdminRoute
   '/analytics': typeof PlatformAnalyticsRoute
   '/dashboard': typeof PlatformDashboardRoute
@@ -107,12 +122,14 @@ export interface FileRoutesByTo {
   '/inventory': typeof PlatformInventoryRoute
   '/map': typeof PlatformMapRoute
   '/reports': typeof PlatformReportsRoute
+  '/tree/$id': typeof TreeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_platform': typeof PlatformRouteWithChildren
   '/auth': typeof AuthRoute
+  '/labels': typeof LabelsRoute
   '/_platform/admin': typeof PlatformAdminRoute
   '/_platform/analytics': typeof PlatformAnalyticsRoute
   '/_platform/dashboard': typeof PlatformDashboardRoute
@@ -122,12 +139,14 @@ export interface FileRoutesById {
   '/_platform/inventory': typeof PlatformInventoryRoute
   '/_platform/map': typeof PlatformMapRoute
   '/_platform/reports': typeof PlatformReportsRoute
+  '/tree/$id': typeof TreeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
+    | '/labels'
     | '/admin'
     | '/analytics'
     | '/dashboard'
@@ -137,10 +156,12 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/map'
     | '/reports'
+    | '/tree/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/labels'
     | '/admin'
     | '/analytics'
     | '/dashboard'
@@ -150,11 +171,13 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/map'
     | '/reports'
+    | '/tree/$id'
   id:
     | '__root__'
     | '/'
     | '/_platform'
     | '/auth'
+    | '/labels'
     | '/_platform/admin'
     | '/_platform/analytics'
     | '/_platform/dashboard'
@@ -164,12 +187,15 @@ export interface FileRouteTypes {
     | '/_platform/inventory'
     | '/_platform/map'
     | '/_platform/reports'
+    | '/tree/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PlatformRoute: typeof PlatformRouteWithChildren
   AuthRoute: typeof AuthRoute
+  LabelsRoute: typeof LabelsRoute
+  TreeIdRoute: typeof TreeIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -193,6 +219,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/labels': {
+      id: '/labels'
+      path: '/labels'
+      fullPath: '/labels'
+      preLoaderRoute: typeof LabelsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_platform/admin': {
@@ -258,6 +291,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlatformReportsRouteImport
       parentRoute: typeof PlatformRoute
     }
+    '/tree/$id': {
+      id: '/tree/$id'
+      path: '/tree/$id'
+      fullPath: '/tree/$id'
+      preLoaderRoute: typeof TreeIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -293,6 +333,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PlatformRoute: PlatformRouteWithChildren,
   AuthRoute: AuthRoute,
+  LabelsRoute: LabelsRoute,
+  TreeIdRoute: TreeIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
