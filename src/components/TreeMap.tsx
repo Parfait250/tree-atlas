@@ -37,7 +37,24 @@ export default function TreeMap({
       maxZoom: 17,
       attribution: "© OpenStreetMap contributors, SRTM | © OpenTopoMap",
     });
-    L.control.layers({ Street: street, Terrain: topo }).addTo(m);
+    const satellite = L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      { maxZoom: 19, attribution: "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics" },
+    );
+    const labels = L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",
+      { maxZoom: 19 },
+    );
+    const hybrid = L.layerGroup([
+      L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        { maxZoom: 19, attribution: "Tiles © Esri" },
+      ),
+      labels,
+    ]);
+    L.control
+      .layers({ Street: street, Satellite: satellite, "Satellite + labels": hybrid, Terrain: topo })
+      .addTo(m);
     layer.current = L.layerGroup().addTo(m);
     map.current = m;
     onReady?.(() => m.setView(INITIAL, 12));
